@@ -10,13 +10,13 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 <body>
 <div class="controlPanel">
 	<label for="dotsCount">Dots count:</label>
-	<input type="range" id="dotsCount" value="700" name="dotsCount" min="1" max="3000">
+	<input type="range" id="dotsCount" value="2" name="dotsCount" min="1" max="3000">
 	<label for="r1">Radius 1:</label>
 	<input type="range" id="r1" value="300" name="r1" min="1" max="500">
 	<label for="r2">Radius 2:</label>
 	<input type="range" id="r2" value="150" name="r2" min="1" max="300">
 	<label for="dot1">Dot size 1:</label>
-	<input type="range" id="dot1" value="5" name="dot1" min="1" max="30">
+	<input type="range" id="dot1" value="50" name="dot1" min="1" max="30">
 	<label for="dot2">Dot size 2:</label>
 	<input type="range" id="dot2" value="2" name="dot2" min="1" max="30">
 	<label for="alpha">Alpha:</label>
@@ -69,12 +69,19 @@ function drawDot(coords, radius){
 	c.stroke();
 }
 
-function getRandomPointOnRadius(coords, r){
-	var an = generateRange(0, 360);
+function getRandomPointOnRadius(an, coords, r){
 	var x2 = coords[0] + (r*1) * Math.cos(an);
 	var y2 = coords[1] + (r*1) * Math.sin(an);
 
 	return [x2, y2];
+}
+
+function degToRad (deg) {
+	return deg / 180 * Math.PI;
+}
+
+function radToDeg (rad) {
+	return rad / Math.PI * 180;
 }
 
 function frame(event){
@@ -88,15 +95,19 @@ function frame(event){
 	var dot1 = document.getElementById("dot1").value;
 	var dot2 = document.getElementById("dot2").value;
 
+
 	if (delta > interval) {
 		clearCanvas();
 		drawDot( center, dot1);
+		var an = 0;
 
 		for (var i=0; i< dotsCount; i++){
-			var dotOnRadius = getRandomPointOnRadius(center, r1);
-			drawDot( dotOnRadius, dot1);
+			an += (360/dotsCount) / 180 * Math.PI;
 
-			var dotOnDottedRadius = getRandomPointOnRadius(dotOnRadius, r2);
+			var dotOnRadius = getRandomPointOnRadius(an, center, r1);
+			drawDot( dotOnRadius, dot1);
+		
+			var dotOnDottedRadius = getRandomPointOnRadius(generateRange(0, 360), dotOnRadius, r2);
 			drawDot( dotOnDottedRadius, dot2);
 		}
 
